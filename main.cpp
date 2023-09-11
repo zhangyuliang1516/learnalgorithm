@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <unordered_set>
 
 int binarySearch(int arr[], int n, int target)
 {
@@ -17,6 +18,65 @@ int binarySearch(int arr[], int n, int target)
     }
     return -1;
 }
+int binarySearch2(int arr[], int l, int r, int target)
+{
+    if (l > r)
+        return -1;
+    int mid = l + (r - l) / 2;
+    if (arr[mid] == target)
+        return mid;
+    if (arr[mid] > target)
+        return binarySearch2(arr, l, mid - 1, target);
+    else
+        return binarySearch2(arr, mid + 1, r, target);
+}
+double pow(double x, int n)
+{
+    double r = 1.0;
+    for (int i = 0; i < n; ++i)
+        r *= x;
+    return r;
+}
+double pow2(double x, int n)
+{
+    if (n == 0)
+        return 1.0;
+    double t = pow2(x, n / 2);
+    if (n % 2)
+        return x * t * t;
+    return t * t;
+}
+template <typename T>
+class Vector
+{
+public:
+    Vector() {
+        data = new T[10];
+        size = 0;
+        capacity = 10;
+    }
+    void push_back(T t) {
+        if (size == capacity)
+            resize(2 * capacity);
+        data[size++] = t;
+    }
+    T pop_back() {
+        size--;
+        return data[size];
+    }
+private:
+    void resize(int newCapacity) {
+        T *newData = new T[newCapacity];
+        for (int i = 0; i < size; ++i)
+            newData[i] = data[i];
+        data = newData;
+        capacity = newCapacity;
+    }
+
+    T *data;
+    int size;
+    int capacity;
+};
 
 void reverse(std::string &s)
 {
@@ -524,6 +584,142 @@ void heapSort(int arr[], int n)
     }
 }
 } // namespace sort2
+
+struct ListNode
+{
+    ListNode() {}
+    ListNode(int x)
+    {
+        data = x;
+        next = nullptr;
+    }
+    ListNode(int x, ListNode *next)
+        :data(x)
+        , next(next)
+    {}
+    int data;
+    ListNode *next;
+};
+ListNode *reverseList2(ListNode *head)
+{
+    ListNode *prev = nullptr;
+    ListNode *curr = head;
+    while (curr) {
+        ListNode *next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    return prev;
+}
+ListNode *reverseList(ListNode *head)
+{
+    if (head == NULL || head->next == NULL)
+        return head;
+    ListNode *cur = reverseList(head->next);
+    head->next->next = head;
+    head->next = nullptr;
+    return cur;
+}
+ListNode *getIntersectionNode2(ListNode *headA, ListNode *headB)
+{
+    std::unordered_set<ListNode *> visited;
+    ListNode *temp = headA;
+    while (temp) {
+        visited.insert(temp);
+        temp = temp->next;
+    }
+    temp = headB;
+    while (temp) {
+        if (visited.count(temp))
+            return temp;
+        temp = temp->next;
+    }
+    return nullptr;
+}
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB)
+{
+    if (headA == NULL || headB == NULL)
+        return NULL;
+    ListNode *pointA = headA;
+    ListNode *pointB = headB;
+    while (pointA != pointB) {
+        if (pointA == NULL)
+            pointA = headB;
+        else
+            pointA = pointA->next;
+        if (pointB == NULL)
+            pointB = headA;
+        else
+            pointB = pointB->next;
+    }
+    return pointA;
+}
+ListNode *mergeTwoLists(ListNode *l1, ListNode *l2)
+{
+    if (l1 == nullptr) {
+        return l2;
+    } else if (l2 == nullptr) {
+        return l1;
+    } else if (l1->data < l2->data) {
+        l1->next = mergeTwoLists(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = mergeTwoLists(l1, l2->next);
+        return l2;
+    }
+}
+ListNode *mergeTwoLists2(ListNode *l1, ListNode *l2)
+{
+    ListNode *preHead = new ListNode(-1);
+    ListNode *prev = preHead;
+    while (l1 != nullptr && l2 != nullptr) {
+        if (l1->data < l2->data) {
+            prev->next = l1;
+            l1 = l1->next;
+        } else {
+            prev->next = l2;
+            l2 = l2->next;
+        }
+        prev = prev->next;
+    }
+    if (l1 == nullptr)
+        prev->next = l2;
+    else
+        prev->next = l1;
+    return preHead->next;
+}
+ListNode *partionList(ListNode *head, int x)
+{
+    ListNode *small = new ListNode(0);
+    ListNode *smallHead = small;
+    ListNode *large = new ListNode(0);
+    ListNode *largeHead = large;
+    while (head) {
+        if (head->data < x) {
+            small->next = head;
+            small = small->next;
+        } else {
+            large->next = head;
+            large = large->next;
+        }
+        head = head->next;
+    }
+    large->next = nullptr;
+    small->next = largeHead->next;
+    return smallHead->next;
+}
+ListNode *detectCycle(ListNode *head)
+{
+    std::unordered_set<ListNode *> visited;
+    while (head) {
+        if (visited.count(head))
+            return head;
+        visited.insert(head);
+        head = head->next;
+    }
+    return nullptr;
+}
 
 using namespace std;
 
