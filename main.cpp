@@ -621,6 +621,43 @@ ListNode *reverseList(ListNode *head)
     head->next = nullptr;
     return cur;
 }
+// 1, (2, 3, 4, 5), 6, 7
+ListNode *reverseBetween(ListNode *head, int left, int right)
+{
+    ListNode *dummy = new ListNode(-1);
+    dummy->next = head;
+    ListNode *pre = dummy;
+    for (int i = 0; i < left - 1; ++i)
+        pre = pre->next;
+    ListNode *rightNode = pre;
+    for (int i = 0; i < right - left + 1; ++i)
+        rightNode = rightNode->next;
+    ListNode *leftNode = pre->next;
+    ListNode *curr = rightNode->next;
+    pre->next = nullptr;
+    rightNode->next = nullptr;
+    reverseList(leftNode);
+    pre->next = rightNode;
+    leftNode->next = curr;
+    return dummy->next;
+}
+ListNode *reverseBetween2(ListNode *head, int left, int right)
+{
+    ListNode *dummy = new ListNode(-1);
+    dummy->next = head;
+    ListNode *pre = dummy;
+    for (int i = 0; i < left  -1; ++i)
+        pre = pre->next;
+    ListNode *curr = pre->next;
+    ListNode *next;
+    for (int i = 0; i < right - left; ++i) {
+        next = curr->next;
+        curr->next = next->next;
+        next->next = pre->next;
+        pre->next = next;
+    }
+    return dummy->next;
+}
 ListNode *getIntersectionNode2(ListNode *headA, ListNode *headB)
 {
     std::unordered_set<ListNode *> visited;
@@ -717,6 +754,28 @@ ListNode *detectCycle(ListNode *head)
             return head;
         visited.insert(head);
         head = head->next;
+    }
+    return nullptr;
+}
+ListNode *detectCycle2(ListNode *head)
+{
+    ListNode *slow = head;
+    ListNode *fast = head;
+    while (fast) {
+        slow = slow->next;
+        if (fast->next) {
+            fast = fast->next->next;
+        } else {
+            return nullptr;
+        }
+        if (fast == slow) {
+            ListNode *ptr = head;
+            while (ptr != slow) {
+                ptr = ptr->next;
+                slow = slow->next;
+            }
+            return ptr;
+        }
     }
     return nullptr;
 }
