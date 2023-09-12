@@ -5,3 +5,9 @@ CONFIG -= qt
 
 SOURCES += \
         main.cpp
+
+HEADERS += \
+    linkedlist.h \
+    myvector.h \
+    sort.h \
+    utils.h
