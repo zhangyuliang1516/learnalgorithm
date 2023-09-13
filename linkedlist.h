@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <unordered_set>
+#include <unordered_map>
 
 struct ListNode
 {
@@ -18,6 +19,7 @@ struct ListNode
     }
     int data;
     ListNode *next;
+    ListNode *random;
 };
 
 ListNode *reverseList2(ListNode *head)
@@ -208,4 +210,40 @@ ListNode *detectCycle2(ListNode *head)
         }
     }
     return nullptr;
+}
+
+std::unordered_map<ListNode *, ListNode *> cachedNodes;
+ListNode *copyRandomNode(ListNode *head)
+{
+    if (head == nullptr)
+        return nullptr;
+    if (!cachedNodes.count(head)) {
+        ListNode *newHead = new ListNode(head->data);
+        cachedNodes[head] = newHead;
+        newHead->next = copyRandomNode(head->next);
+        newHead->random = copyRandomNode(head->random);
+    }
+    return cachedNodes[head];
+}
+
+ListNode *copyRandomNode2(ListNode *head)
+{
+    if (head == nullptr)
+        return head;
+    for (ListNode *node = head; node != nullptr; node = node->next->next) {
+        ListNode *newNode = new ListNode(node->data);
+        newNode->next = node->next;
+        node->next = newNode;
+    }
+    for (ListNode *node = head; node != nullptr; node = node->next->next) {
+        ListNode *next = node->next;
+        next->random = node->random ? node->random->random : nullptr;
+    }
+    ListNode *newHead = head->next;
+    for (ListNode *node = head; node != nullptr; node = node->next) {
+        ListNode *newNode = node->next;
+        node->next = newNode->next;
+        newNode->next = newNode->next ? newNode->next->next : nullptr;
+    }
+    return newHead;
 }
