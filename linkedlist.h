@@ -84,6 +84,30 @@ ListNode *reverseBetween2(ListNode *head, int left, int right)
     return dummy->next;
 }
 
+ListNode *reverseKGroup(ListNode *head, int k)
+{
+    ListNode *dummy = new ListNode(-1);
+    dummy->next = head;
+    ListNode *pre = dummy;
+    while (pre) {
+        ListNode *right = pre;
+        for (int i = 0; i < k; ++i) {
+            right = right->next;
+            if (!right)
+                return dummy->next;
+        }
+        ListNode *left = pre->next;
+        ListNode *next = right->next;
+        pre->next = nullptr;
+        right->next = nullptr;
+        reverseList(left);
+        pre->next = right;
+        left->next = next;
+        pre = left;
+    }
+    return dummy->next;
+}
+
 ListNode *getIntersectionNode2(ListNode *headA, ListNode *headB)
 {
     std::unordered_set<ListNode *> visited;
