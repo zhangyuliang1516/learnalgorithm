@@ -8,6 +8,9 @@ SOURCES += \
 
 HEADERS += \
     linkedlist.h \
+    myheap.h \
+    myqueue.h \
+    mystack.h \
     myvector.h \
     sort.h \
     utils.h
