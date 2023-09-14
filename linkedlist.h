@@ -247,3 +247,25 @@ ListNode *copyRandomNode2(ListNode *head)
     }
     return newHead;
 }
+
+ListNode *removeElements(ListNode *head, int v)
+{
+    if (head == nullptr)
+        return nullptr;
+    head->next = removeElements(head->next, v);
+    return head->data == v ? head->next : head;
+}
+
+ListNode *removeElements2(ListNode *head, int v)
+{
+    ListNode *dummy = new ListNode(-1);
+    dummy->next = head;
+    ListNode *temp = dummy;
+    while (temp->next) {
+        if (temp->next->data == v)
+            temp->next = temp->next->next;
+        else
+            temp = temp->next;
+    }
+    return dummy->next;
+}
