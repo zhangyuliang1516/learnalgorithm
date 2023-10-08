@@ -107,7 +107,7 @@ void merge(int arr[], int tmpArr[], int start, int mid, int end)
         tmpArr[i] = arr[i];
     int left = start;
     int right = mid + 1;
-    for (int i = 0; i <= end; ++i) {
+    for (int i = start; i <= end; ++i) {
         if (left > mid)
             arr[i] = tmpArr[right++];
         else if (right > end)
