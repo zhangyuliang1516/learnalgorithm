@@ -36,3 +36,34 @@ bool validateStackSequences(std::vector<int> pushed, std::vector<int> popped)
     }
     return st.empty();
 }
+
+std::vector<int> dailyTemperatures(std::vector<int> &temperatures)
+{
+    size_t n = temperatures.size();
+    std::vector<int> ans(n), next(101, INT_MAX);
+    for (int i = n - 1; i >= 0; --i) {
+        int warmerIndex = INT_MAX;
+        for (int t = temperatures[i] + 1; t <= 100; ++t)
+            warmerIndex = std::min(warmerIndex, next[t]);
+        if (warmerIndex != INT_MAX)
+            ans[i] = warmerIndex - i;
+        next[temperatures[i]] = i;
+    }
+    return ans;
+}
+
+std::vector<int> dailyTemperatures2(std::vector<int> &temperatures)
+{
+    int n = temperatures.size();
+    std::vector<int> ans(n);
+    std::stack<int> s;
+    for (int i = 0; i < n; ++i) {
+        while (!s.empty() && temperatures[i] > temperatures[s.top()]) {
+            int previousIndex = s.top();
+            ans[previousIndex] = i - previousIndex;
+            s.pop();
+        }
+        s.push(i);
+    }
+    return ans;
+}
