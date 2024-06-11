@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 
 void bubbleSort(int arr[], int n)
 {
@@ -32,12 +33,45 @@ void bubbleSort2(int arr[], int n)
     }
 }
 
+void bubbleSort4(int arr[], int n)
+{
+    for (int i = 0; i < n - 1; ++i) {
+        bool sorted = true;
+        for (int j = 0; j < n - 1 - i; ++j) {
+            if (arr[j] > arr[j + 1]) {
+                int tmp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tmp;
+                sorted = false;
+            }
+        }
+        if (sorted)
+            break;
+    }
+}
+
 void selectSort(int arr[], int n)
 {
     for (int i = 0; i < n; ++i) {
         int min = i;
         for (int j = i + 1; j < n; ++j) {
             if (arr[j] < arr[min])
+                min = j;
+        }
+        if (min != i) {
+            int tmp = arr[i];
+            arr[i] = arr[min];
+            arr[min] = tmp;
+        }
+    }
+}
+
+void selectSort2(int arr[], int n)
+{
+    for (int i = 0; i < n; ++i) {
+        int min = i;
+        for (int j = i + 1; j < n; ++j) {
+            if (arr[min] > arr[j])
                 min = j;
         }
         if (min != i) {
@@ -81,6 +115,21 @@ void insertSort2(int arr[], int n)
     }
 }
 
+void insertSort3(int arr[], int n)
+{
+    for (int i = 1; i < n; ++i) {
+        int value = arr[i];
+        int j = 0;
+        for (j = i - 1; j >= 0; --j) {
+            if (arr[j] > value)
+                arr[j + 1] = arr[j];
+            else
+                break;
+        }
+        arr[j + 1] = value;
+    }
+}
+
 void shellSort(int arr[], int n)
 {
     int gap = 1;
@@ -96,6 +145,25 @@ void shellSort(int arr[], int n)
                 j -= gap;
             }
             arr[j + gap] = tmp;
+        }
+        gap /= 3;
+    }
+}
+
+void shellSort2(int arr[], int n)
+{
+    int gap = 1;
+    while (gap < n)
+        gap = gap * 3 + 1;
+    while (gap > 0) {
+        for (int i = gap; i < n; ++i) {
+            int value = arr[i];
+            int j = i - gap;
+            while (j >= 0 && arr[j] > value) {
+                arr[j + gap] = arr[j];
+                j -= gap;
+            }
+            arr[j + gap] = value;
         }
         gap /= 3;
     }
@@ -135,6 +203,39 @@ void mergeSort(int arr[], int n)
     subMergeSort(arr, tmpArr, 0, n - 1);
 }
 
+void merge2(int arr[], int tmpArr[], int start, int mid, int end)
+{
+    for (int i = start; i <= end; ++i)
+        tmpArr[i] = arr[i];
+    int left = start;
+    int right = mid + 1;
+    for (int i = start; i <= end; ++i) {
+        if (left > mid)
+            arr[i] = tmpArr[right++];
+        else if (right > end)
+            arr[i] = tmpArr[left++];
+        else if (tmpArr[left] <= tmpArr[right])
+            arr[i] = tmpArr[left++];
+        else
+            arr[i] = tmpArr[right++];
+    }
+}
+void subMergeSort2(int arr[], int tmpArr[], int start, int end)
+{
+    if (start >= end)
+        return;
+    int mid = (start + end) / 2;
+    subMergeSort2(arr, tmpArr, start, mid);
+    subMergeSort2(arr, tmpArr, mid + 1, end);
+    merge2(arr, tmpArr, start, mid, end);
+}
+void mergeSort2(int arr[], int n)
+{
+    int *tmpArr = new int[n];
+    subMergeSort2(arr, tmpArr, 0, n - 1);
+    delete[] tmpArr;
+}
+
 int partion(int arr[], int start, int end)
 {
     int base = arr[start];
@@ -154,19 +255,25 @@ int partion(int arr[], int start, int end)
 
 int partionV2(int arr[], int start, int end)
 {
-    int left = start;
+    int left = start + 1;
     int right = end;
     int base = arr[start];
     while (true) {
+        for (int i = start; i <= end; ++i)
+            std::cout << arr[i] << " ";
+        std::cout << std::endl;
         while (left < right && arr[left] < base)
             left++;
         while (left < right && arr[right] > base)
             right--;
-        if (left <= right)
+        if (left >= right)
             break;
         int tmp = arr[left];
         arr[left] = arr[right];
         arr[right] = tmp;
+        for (int i = start; i <= end; ++i)
+            std::cout << arr[i] << " ";
+        std::cout << std::endl;
     }
     arr[start] = arr[left];
     arr[left] = base;
@@ -177,7 +284,7 @@ void subQuickSort(int arr[], int start, int end)
 {
     if (end <= start)
         return;
-    int mid = partion(arr, start, end);
+    int mid = partionV2(arr, start, end);
     subQuickSort(arr, start, mid - 1);
     subQuickSort(arr, mid + 1, end);
 }
@@ -185,6 +292,35 @@ void subQuickSort(int arr[], int start, int end)
 void quickSort(int arr[], int n)
 {
     subQuickSort(arr, 0, n - 1);
+}
+
+int partion2(int arr[], int start, int end)
+{
+    int base = arr[start];
+    int mark = start;
+    for (int i = start + 1; i <= end; ++i) {
+        if (arr[i] < base) {
+            mark++;
+            int tmp = arr[mark];
+            arr[mark] = arr[i];
+            arr[i] = tmp;
+        }
+    }
+    arr[start] = arr[mark];
+    arr[mark] = base;
+    return mark;
+}
+void subQuickSort2(int arr[], int start, int end)
+{
+    if (start >= end)
+        return;
+    int mid = partion2(arr, start, end);
+    subQuickSort2(arr, start, mid - 1);
+    subQuickSort2(arr, mid + 1, end);
+}
+void quickSort2(int arr[], int n)
+{
+    subQuickSort2(arr, 0, n - 1);
 }
 
 void sink(int arr[], int index, int n)
@@ -203,13 +339,11 @@ void sink(int arr[], int index, int n)
         sink(arr, present, n);
     }
 }
-
 void buildHeap(int arr[], int n)
 {
     for (int i = n / 2; i >= 0; --i)
         sink(arr, i, n);
 }
-
 void heapSort(int arr[], int n)
 {
     buildHeap(arr, n);
@@ -219,6 +353,38 @@ void heapSort(int arr[], int n)
         arr[i] = tmp;
         n--;
         sink(arr, 0, n);
+    }
+}
+void sink2(int arr[], int index, int n)
+{
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+    int present = index;
+    if (left < n && arr[left] > arr[present])
+        present = left;
+    if (right < n && arr[right] > arr[present])
+        present = right;
+    if (present != index) {
+        int tmp = arr[present];
+        arr[present] = arr[index];
+        arr[index] = arr[tmp];
+        sink(arr, present, n);
+    }
+}
+void buildHeap2(int arr[], int n)
+{
+    for (int i = n / 2; i >= 0; ++i)
+        sink2(arr, i, n);
+}
+void heapSort2(int arr[], int n)
+{
+    buildHeap2(arr, n);
+    for (int i = n - 1; i > 0; --i) {
+        int tmp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = tmp;
+        n--;
+        sink2(arr, 0, n);
     }
 }
 
@@ -237,6 +403,21 @@ void countSort(int arr[], int n)
         while (countArr[i]-- > 0)
             arr[index++] = i;
     }
+}
+void countSort2(int arr[], int n)
+{
+    int max = arr[0];
+    for (int i = 1; i < n; ++i) {
+        if (arr[i] > max)
+            max = arr[i];
+    }
+    int *countArr = new int[max + 1] { 0 };
+    for (int i = 0; i < n; ++i)
+        countArr[arr[i]]++;
+    int index = 0;
+    for (int i = 0; i <= max; ++i)
+        while (countArr[i]-- > 0)
+            arr[index++] = i;
 }
 
 void bucketSort(int arr[], int n)
@@ -312,4 +493,37 @@ void radixSort(int arr[], int n)
     }
     delete[] count;
     delete[] tmp;
+}
+void radixSort2(int arr[], int n)
+{
+    int max = arr[0];
+    for (int i = 1; i < n; ++i) {
+        if (arr[i] > max)
+            max = arr[i];
+    }
+    int radix = 1;
+    int *tmp = new int[n];
+    int *count = new int[10];
+    while (1) {
+        if (max < radix)
+            break;
+        for (int i = 0; i < 10; ++i)
+            count[i] = 0;
+        for (int i = 0; i < n; ++i) {
+            int index = (arr[i] / radix) % 10;
+            count[index]++;
+        }
+        for (int i = 1; i < 10; ++i)
+            count[i] = count[i - 1] + count[i];
+        for (int i = n - 1; i >= 0; --i) {
+            int index = (arr[i] / radix) % 10;
+            tmp[count[index] - 1] = arr[i];
+            count[index]--;
+        }
+        for (int i = 0; i < n; ++i)
+            arr[i] = tmp[i];
+        radix *= 10;
+    }
+    delete[] tmp;
+    delete[] count;
 }

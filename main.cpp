@@ -4,18 +4,23 @@
 #include "linkedlist.h"
 #include "myheap.h"
 #include "myqueue.h"
+#include "mystack.h"
+#include <stack>
 
 #include <iostream>
 
 using namespace std;
 
+namespace test {
+
+}
+
 int main()
 {
+    int arr[] = { 9, 8, 7, 6, 5, 10, 4, 3, 2, 1 };
+    quickSort(arr, 10);
     //    cout << "Hello World!" << endl;
-    //    int arr[] = { 8,      200, 90, 7000, 6, 10000, 1500, 120, 14, 130,
-    //                  160000, 10,  5,  3,    8, 2,     9,    7,   6,  10 };
-    //    insertSort2(arr, 20);
-    //    testHeap();
-    testPriorityQueue();
+    std::vector<int> temperatures = { 73, 74, 75, 71, 69, 72, 76, 73 };
+    std::vector<int> ans = dailyTemperatures(temperatures);
     return 0;
 }
