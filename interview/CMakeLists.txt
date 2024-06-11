@@ -1,1 +1,2 @@
 add_subdirectory(assignmentoperator)
+add_subdirectory(singleton)
