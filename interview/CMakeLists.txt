@@ -1,2 +1,3 @@
 add_subdirectory(assignmentoperator)
 add_subdirectory(singleton)
+add_subdirectory(duplicationinarray)
