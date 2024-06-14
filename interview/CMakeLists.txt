@@ -1,5 +1,6 @@
 add_subdirectory(assignmentoperator)
 add_subdirectory(singleton)
 add_subdirectory(duplicationinarray)
+add_subdirectory(duplicationinarraynoedit)
 add_subdirectory(findinpartiallysortedmatrix)
 add_subdirectory(replaceblank)
