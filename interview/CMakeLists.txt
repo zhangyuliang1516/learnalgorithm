@@ -9,4 +9,4 @@ add_subdirectory(printlistinreversedorder)
 add_subdirectory(binarytreetest)
 add_subdirectory(queuewithtwostacks)
 add_subdirectory(fibonacci)
-
+add_subdirectory(mininrotatedarray)
