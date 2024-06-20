@@ -29,8 +29,7 @@ ListNode *entryNodeInListLoop(ListNode *head)
         return nullptr;
     int nodesInLoop = 1;
     ListNode *node = meeting;
-    while (node->m_next != meeting)
-    {
+    while (node->m_next != meeting) {
         node = node->m_next;
         nodesInLoop++;
     }
